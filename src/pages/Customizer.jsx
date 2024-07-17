@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSnapshot } from 'valtio';
 
@@ -8,14 +8,13 @@ import { download } from '../assets';
 import { downloadCanvasToImage, reader } from '../config/helpers';
 import { EditorTabs, FilterTabs, DecalTypes } from '../config/constants';
 import { fadeAnimation, slideAnimation } from '../config/motion';
-import { AIPicker, ColorPicker, CustomButton, FilePicker, Tab,  } from '../components'; // Import TextPicker
+import { AIPicker, ColorPicker, CustomButton, FilePicker, Tab } from '../components';
 
 const Customizer = () => {
   const snap = useSnapshot(state);
 
   const [file, setFile] = useState('');
-  const [prompt, setPrompt] = useState('');
-  const [generatingImg, setGeneratingImg] = useState(false);
+  const [toggle, setToggle] = useState(false);
   const [activeEditorTab, setActiveEditorTab] = useState("");
   const [activeFilterTab, setActiveFilterTab] = useState({
     logoShirt: true,
@@ -35,11 +34,19 @@ const Customizer = () => {
         />;
       case "aipicker":
         return <AIPicker />;
-      
       default:
         return null;
     }
   }
+
+  const handleClick = (tab) => {
+    if (activeEditorTab === tab.name) {
+      setToggle(!toggle);
+    } else {
+      setToggle(true);
+    }
+    setActiveEditorTab(tab.name);
+  };
 
   const handleDecals = (type, result) => {
     const decalType = DecalTypes[type];
@@ -65,12 +72,10 @@ const Customizer = () => {
     }
 
     // After setting the state, activeFilterTab is updated
-    setActiveFilterTab((prevState) => {
-      return {
-        ...prevState,
-        [tabName]: !prevState[tabName]
-      }
-    });
+    setActiveFilterTab((prevState) => ({
+      ...prevState,
+      [tabName]: !prevState[tabName]
+    }));
   }
 
   const readFile = (type) => {
@@ -96,10 +101,10 @@ const Customizer = () => {
                   <Tab 
                     key={tab.name}
                     tab={tab}
-                    handleClick={() => setActiveEditorTab(tab.name)}
+                    handleClick={() => handleClick(tab)}
                   />
                 ))}
-                {generateTabContent()}
+                {toggle && generateTabContent()}
               </div>
             </div>
           </motion.div>

@@ -28,7 +28,7 @@ const Home = () => {
           <motion.div className="home-content" {...headContainerAnimation}>
             <motion.div {...headTextAnimation}>
               <h1 className="head-text">
-                3D <br className="xl:block hidden" />SHIRT .
+                3D <br className="xl:block hidden" /> T-Shirt .
               </h1>
             </motion.div>
             <motion.div
